@@ -3,26 +3,27 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{% block title %}School Manager{% endblock %}</title>
-    <link rel="stylesheet" type="text/css" href="{% static 'students/style.css' %}">
+    <link rel="stylesheet" href="{% static 'students/style.css' %}?v=3">
 </head>
 <body>
     <header>
-        <strong>School Manager</strong>
-       
-            <nav>
-    {% url 'home' as home_url %}
-    {% url 'student_list' as students_url %}
-    {% url 'teacher_list' as teachers_url %}
-    {% url 'about' as about_url %}
+        <a class="brand" href="{% url 'home' %}">
+            <span class="brand-mark" aria-hidden="true">S</span>
+            <span>School <strong>Manager</strong></span>
+        </a>
+        <nav aria-label="Navigation principale">
+            {% url 'home' as home_url %}
+            {% url 'student_list' as students_url %}
+            {% url 'teacher_list' as teachers_url %}
+            {% url 'about' as about_url %}
 
-    <a href="{{ home_url }}" {% if request.path == home_url %}class="active"{% endif %}>Accueil</a>
-    <a href="{{ students_url }}" {% if request.path == students_url %}class="active"{% endif %}>Étudiants</a>
-    <a href="{{ teachers_url }}" {% if request.path == teachers_url %}class="active"{% endif %}>Enseignants</a>
-    <a href="{{ about_url }}" {% if request.path == about_url %}class="active"{% endif %}>À propos</a>
-</nav>
-            
-        
+            <a href="{{ home_url }}" {% if request.path == home_url %}class="active"{% endif %}>Accueil</a>
+            <a href="{{ students_url }}" {% if '/students/' in request.path %}class="active"{% endif %}>Étudiants</a>
+            <a href="{{ teachers_url }}" {% if '/teachers/' in request.path %}class="active"{% endif %}>Enseignants</a>
+            <a href="{{ about_url }}" {% if request.path == about_url %}class="active"{% endif %}>À propos</a>
+        </nav>
     </header>
 
     <main>
@@ -31,7 +32,8 @@
     </main>
 
     <footer>
-        School Manager · Projet de formation Django
+        <span>School Manager</span>
+        <span>Une gestion scolaire simple et claire</span>
     </footer>
 </body>
 </html>

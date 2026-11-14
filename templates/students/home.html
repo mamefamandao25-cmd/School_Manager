@@ -3,8 +3,59 @@
 {% block title %}Accueil · School Manager{% endblock %}
 
 {% block content %}
-    <h1>Bienvenue dans School Manager</h1>
-    <p>Établissement : <strong>{{ school_name }}</strong></p>
-    <p>Nombre de classes : {{ nb_classes }}</p>
-    <a href="{% url 'student_list' %}">Voir la liste des étudiants</a>
+    <section class="hero">
+        <div class="hero-copy">
+            <p class="eyebrow">ESPACE DE GESTION SCOLAIRE</p>
+            <h1>Bienvenue dans<br><span>School Manager</span></h1>
+            <p class="hero-description">
+                Retrouvez en un seul endroit les informations de votre établissement
+                et gérez facilement vos étudiants et enseignants.
+            </p>
+            <div class="hero-actions">
+                <a href="{% url 'student_list' %}" class="button">Voir les étudiants <span aria-hidden="true">→</span></a>
+                <a href="{% url 'teacher_list' %}" class="text-link">Consulter les enseignants</a>
+            </div>
+        </div>
+        <div class="hero-note">
+            <span class="hero-note-icon" aria-hidden="true">✦</span>
+            <p>Un établissement organisé commence par des informations accessibles.</p>
+        </div>
+    </section>
+
+    <section class="dashboard" aria-labelledby="dashboard-title">
+        <div class="section-heading">
+            <div>
+                <p class="eyebrow">VOTRE ÉTABLISSEMENT</p>
+                <h2 id="dashboard-title">{{ school_name }}</h2>
+            </div>
+            <span class="status-pill"><span></span> Tableau de bord</span>
+        </div>
+
+        <div class="stats-grid">
+            <article class="stat-card">
+                <span class="stat-icon" aria-hidden="true">É</span>
+                <p class="stat-label">Étudiants inscrits</p>
+                <p class="stat-value">{{ student_count }}</p>
+                <a href="{% url 'student_list' %}">Voir la liste <span aria-hidden="true">→</span></a>
+            </article>
+            <article class="stat-card">
+                <span class="stat-icon" aria-hidden="true">✓</span>
+                <p class="stat-label">Étudiants actifs</p>
+                <p class="stat-value">{{ active_student_count }}</p>
+                <span class="stat-footnote">Inscrits actuellement</span>
+            </article>
+            <article class="stat-card">
+                <span class="stat-icon" aria-hidden="true">C</span>
+                <p class="stat-label">Classes</p>
+                <p class="stat-value">{{ class_count }}</p>
+                <span class="stat-footnote">Avec des étudiants inscrits</span>
+            </article>
+            <article class="stat-card">
+                <span class="stat-icon" aria-hidden="true">E</span>
+                <p class="stat-label">Enseignants</p>
+                <p class="stat-value">{{ teacher_count }}</p>
+                <a href="{% url 'teacher_list' %}">Voir l’équipe <span aria-hidden="true">→</span></a>
+            </article>
+        </div>
+    </section>
 {% endblock %}

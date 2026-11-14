@@ -1,65 +1,89 @@
-from django.shortcuts import render
-from django.http import Http404
+from django.shortcuts import get_object_or_404, redirect, render
 
-# Données temporaires : elles viendront de la base de données plus tard
-STUDENTS = [
-    {"id": 1, "first_name": "Mame Fama", "last_name": "Ndao", "classe": "L1", "active": True},
-    {"id": 2, "first_name": "Moustapha", "last_name": "Ndiaye", "classe": "L2", "active": False},
-    {"id": 3, "first_name": "Fatou Binetou", "last_name": "Ladiane", "classe": "L1", "active": False},
-    {"id": 4, "first_name": "Khalil", "last_name": "Diaw", "classe": "L3", "active": True},
-]
-# 1. La page d'accueil
+from .forms import StudentForm
+from .models import Student, Teacher
+
+
 def home(request):
     context = {
-        "school_name": "Lycée d'Excellence de Kaffrine",
-        "nb_classes": 16,
+        "school_name": "Lycée d'Excellence de Dakar",
+        "student_count": Student.objects.count(),
+        "active_student_count": Student.objects.filter(active=True).count(),
+        "class_count": Student.objects.values("classe").distinct().count(),
+        "teacher_count": Teacher.objects.count(),
     }
     return render(request, "students/home.html", context)
 
-# 2. La page de la liste
+
 def student_list(request):
+    query = request.GET.get("q", "").strip()
+    students = Student.objects.all().order_by("last_name", "first_name")
+
+    if query:
+        students = students.filter(
+            first_name__icontains=query
+        ) | students.filter(
+            last_name__icontains=query
+        ) | students.filter(
+            classe__icontains=query
+        )
+
     context = {
-        "students": STUDENTS,
+        "students": students.distinct().order_by("last_name", "first_name"),
+        "query": query,
     }
     return render(request, "students/student_list.html", context)
 
-# 3. La page détail
+
+def student_create(request):
+    if request.method == "POST":
+        form = StudentForm(request.POST)
+        if form.is_valid():
+            student = form.save()
+            return redirect("student_detail", id=student.id)
+    else:
+        form = StudentForm()
+
+    return render(request, "students/student_form.html", {"form": form, "title": "Ajouter un étudiant"})
+
+
 def student_detail(request, id):
-    for student in STUDENTS:
-        if student["id"] == id:
-            context = {"student": student}
-            return render(request, "students/student_detail.html", context)
-    
-    raise Http404("Étudiant introuvable")
-# ... (ton code existant au-dessus) ...
-
-def student_detail(request, id):
-    for student in STUDENTS:
-        if student["id"] == id:
-            context = {"student": student}
-            return render(request, "students/student_detail.html", context)
-            
-    raise Http404("Étudiant introuvable")
+    student = get_object_or_404(Student, id=id)
+    return render(request, "students/student_detail.html", {"student": student})
 
 
+def student_edit(request, id):
+    student = get_object_or_404(Student, id=id)
 
-# Étape 11 : La page À propos
+    if request.method == "POST":
+        form = StudentForm(request.POST, instance=student)
+        if form.is_valid():
+            form.save()
+            return redirect("student_detail", id=student.id)
+    else:
+        form = StudentForm(instance=student)
+
+    return render(request, "students/student_form.html", {"form": form, "title": "Modifier un étudiant", "student": student})
+
+
+def student_delete(request, id):
+    student = get_object_or_404(Student, id=id)
+
+    if request.method == "POST":
+        student.delete()
+        return redirect("student_list")
+
+    return render(request, "students/student_delete.html", {"student": student})
+
+
+def students_by_class(request, classe):
+    students = Student.objects.filter(classe__iexact=classe).order_by("last_name", "first_name")
+    return render(request, "students/student_list.html", {"students": students, "query": classe})
+
+
+def teacher_list(request):
+    return render(request, "students/teachers.html", {"teachers": Student.objects.filter(active=True)})
+
+
 def about(request):
     return render(request, "students/about.html")
-
-# Étape 12 : Filtrer les étudiants par classe
-def students_by_class(request, classe):
-    selection = []
-    for student in STUDENTS:
-        if student["classe"] == classe:
-            selection.append(student)
-    context = {"students": selection}
-    return render(request, "students/student_list.html", context)
-TEACHERS = [
-    {"first_name": "Mamadou Moustapha", "last_name": "Sarr", "subject": "Mathématiques"},
-    {"first_name": "Pape Ibrahima", "last_name": "Niang", "subject": "Informatique"},
-    {"first_name": "Cheikh Alssane", "last_name": "Ndoye", "subject": "Anglais"},
-]
-def teacher_list(request):
-    context = {"teachers": TEACHERS}
-    return render(request, "teachers.html", context)

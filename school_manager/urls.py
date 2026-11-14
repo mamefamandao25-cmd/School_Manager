@@ -1,5 +1,5 @@
 """
-URL configuration for monsite project.
+URL configuration for school_manager project.
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/6.1/topics/http/urls/
@@ -15,15 +15,14 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
-from students.views import about, home, student_detail, student_list, students_by_class, teacher_list
+from django.urls import include, path
+
+from students.views import about, home
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', home, name='home'),
-    path('students/', student_list, name='student_list'),
+    path('students/', include('students.urls')),
+    path('teachers/', include('teachers.urls')),
     path('about/', about, name='about'),
-    path('students/classe/<str:classe>/', students_by_class, name='students_by_class'),
-    path('students/<int:id>/', student_detail, name='student_detail'),
-    path('teachers/', teacher_list, name='teacher_list'),
 ]

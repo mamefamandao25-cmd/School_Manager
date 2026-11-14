@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block title %}Enseignants · School Manager{% endblock %}
+
+{% block content %}
+    <h1>Enseignants</h1>
+
+    <form method="get" action="{% url 'teacher_list' %}">
+        <input type="search" name="q" value="{{ query|default:'' }}" placeholder="Rechercher par nom, prénom ou matière">
+        <button type="submit">Rechercher</button>
+        {% if query %}
+            <a href="{% url 'teacher_list' %}" class="button">Réinitialiser</a>
+        {% endif %}
+    </form>
+
+    <p>{{ teachers|length }} enseignant{{ teachers|length|pluralize }}</p>
+
+    <p>
+        <a href="{% url 'teacher_create' %}" class="button">Ajouter un enseignant</a>
+    </p>
+
+    <table>
+        <tr>
+            <th>Prénom</th><th>Nom</th><th>Matière</th><th>Actions</th>
+        </tr>
+        {% for teacher in teachers %}
+        <tr>
+            <td><a href="{% url 'teacher_detail' teacher.id %}">{{ teacher.first_name }}</a></td>
+            <td>{{ teacher.last_name|upper }}</td>
+            <td>{{ teacher.subject }}</td>
+            <td>
+                <a href="{% url 'teacher_edit' teacher.id %}" class="action-link">Modifier</a>
+                <a href="{% url 'teacher_delete' teacher.id %}" class="action-link danger">Supprimer</a>
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="4">Aucun enseignant inscrit.</td>
+        </tr>
+        {% endfor %}
+    </table>
+{% endblock %}
