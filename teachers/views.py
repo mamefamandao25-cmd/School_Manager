@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.shortcuts import get_object_or_404, redirect, render
 
 from students.models import Teacher
@@ -30,7 +31,8 @@ def teacher_create(request):
         form = TeacherForm(request.POST)
         if form.is_valid():
             teacher = form.save()
-            return redirect('teacher_detail', id=teacher.id)
+            messages.success(request, f"{teacher} a été ajouté(e).")
+            return redirect('teachers:list')
     else:
         form = TeacherForm()
 
@@ -49,7 +51,8 @@ def teacher_edit(request, id):
         form = TeacherForm(request.POST, instance=teacher)
         if form.is_valid():
             form.save()
-            return redirect('teacher_detail', id=teacher.id)
+            messages.success(request, f"La fiche de {teacher} a été mise à jour.")
+            return redirect('teachers:detail', id=teacher.id)
     else:
         form = TeacherForm(instance=teacher)
 
@@ -60,7 +63,9 @@ def teacher_delete(request, id):
     teacher = get_object_or_404(Teacher, id=id)
 
     if request.method == 'POST':
+        name = str(teacher)
         teacher.delete()
-        return redirect('teacher_list')
+        messages.success(request, f"{name} a été supprimé(e).")
+        return redirect('teachers:list')
 
     return render(request, 'teachers/teacher_delete.html', {'teacher': teacher})

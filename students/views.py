@@ -1,3 +1,5 @@
+from django.contrib import messages
+from django.db.models import Q
 from django.shortcuts import get_object_or_404, redirect, render
 
 from .forms import StudentForm
@@ -21,11 +23,9 @@ def student_list(request):
 
     if query:
         students = students.filter(
-            first_name__icontains=query
-        ) | students.filter(
-            last_name__icontains=query
-        ) | students.filter(
-            classe__icontains=query
+            Q(first_name__icontains=query)
+            | Q(last_name__icontains=query)
+            | Q(classe__icontains=query)
         )
 
     context = {
@@ -40,11 +40,12 @@ def student_create(request):
         form = StudentForm(request.POST)
         if form.is_valid():
             student = form.save()
-            return redirect("student_detail", id=student.id)
+            messages.success(request, f"{student} a été inscrit(e).")
+            return redirect("students:detail", id=student.id)
     else:
         form = StudentForm()
 
-    return render(request, "students/student_form.html", {"form": form, "title": "Ajouter un étudiant"})
+    return render(request, "students/student_form.html", {"form": form, "title": "Inscrire un étudiant"})
 
 
 def student_detail(request, id):
@@ -59,7 +60,8 @@ def student_edit(request, id):
         form = StudentForm(request.POST, instance=student)
         if form.is_valid():
             form.save()
-            return redirect("student_detail", id=student.id)
+            messages.success(request, f"La fiche de {student} a été mise à jour.")
+            return redirect("students:detail", id=student.id)
     else:
         form = StudentForm(instance=student)
 
@@ -70,8 +72,10 @@ def student_delete(request, id):
     student = get_object_or_404(Student, id=id)
 
     if request.method == "POST":
+        name = str(student)
         student.delete()
-        return redirect("student_list")
+        messages.success(request, f"{name} a été supprimé(e).")
+        return redirect("students:list")
 
     return render(request, "students/student_delete.html", {"student": student})
 

@@ -22,7 +22,7 @@ from students.views import about, home
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', home, name='home'),
-    path('students/', include('students.urls')),
-    path('teachers/', include('teachers.urls')),
+    path('students/', include('students.urls', namespace='students')),
+    path('teachers/', include('teachers.urls', namespace='teachers')),
     path('about/', about, name='about'),
 ]

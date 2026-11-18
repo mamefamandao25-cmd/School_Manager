@@ -5,18 +5,18 @@
 {% block content %}
     <h1>Liste des étudiants</h1>
 
-    <form method="get" action="{% url 'student_list' %}">
+    <form method="get" action="{% url 'students:list' %}">
         <input type="search" name="q" value="{{ query|default:'' }}" placeholder="Rechercher par nom ou prénom">
         <button type="submit">Rechercher</button>
         {% if query %}
-            <a href="{% url 'student_list' %}">Réinitialiser</a>
+            <a href="{% url 'students:list' %}">Réinitialiser</a>
         {% endif %}
     </form>
 
     <p>{{ students|length }} étudiant{{ students|length|pluralize }}</p>
 
     <p>
-        <a href="{% url 'student_create' %}">Ajouter un étudiant</a>
+        <a href="{% url 'students:create' %}">Inscrire un étudiant</a>
     </p>
     
     <table border="1">
@@ -26,15 +26,15 @@
         {% for student in students %}
         <tr>
             <td>{{ student.id }}</td>
-            <td><a href="{% url 'student_detail' student.id %}">{{ student.first_name }}</a></td>
+            <td><a href="{% url 'students:detail' student.id %}">{{ student.first_name }}</a></td>
             <td>{{ student.last_name|upper }}</td>
             <td>{{ student.classe }}</td>
             <td>
                 {% if student.active %}Actif{% else %}Inactif{% endif %}
             </td>
             <td>
-                <a href="{% url 'student_edit' student.id %}">Modifier</a> |
-                <a href="{% url 'student_delete' student.id %}">Supprimer</a>
+                <a href="{% url 'students:update' student.id %}">Modifier</a> |
+                <a href="{% url 'students:delete' student.id %}">Supprimer</a>
             </td>
         </tr>
         {% empty %}

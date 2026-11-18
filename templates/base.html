@@ -15,8 +15,8 @@
         </a>
         <nav aria-label="Navigation principale">
             {% url 'home' as home_url %}
-            {% url 'student_list' as students_url %}
-            {% url 'teacher_list' as teachers_url %}
+            {% url 'students:list' as students_url %}
+            {% url 'teachers:list' as teachers_url %}
             {% url 'about' as about_url %}
 
             <a href="{{ home_url }}" {% if request.path == home_url %}class="active"{% endif %}>Accueil</a>
@@ -27,6 +27,11 @@
     </header>
 
     <main>
+        {% if messages %}
+            {% for message in messages %}
+                <p class="message {{ message.tags }}">{{ message }}</p>
+            {% endfor %}
+        {% endif %}
         {% block content %}
         {% endblock %}
     </main>

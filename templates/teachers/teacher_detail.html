@@ -3,12 +3,13 @@
 {% block title %}{{ teacher.first_name }} {{ teacher.last_name }}{% endblock %}
 
 {% block content %}
-    <a href="{% url 'teacher_list' %}">← Retour à la liste</a>
+    <a href="{% url 'teachers:list' %}">← Retour à la liste</a>
     <h1>{{ teacher.first_name }} {{ teacher.last_name }}</h1>
+    <p>Email : {{ teacher.email }}</p>
     <p>Matière : {{ teacher.subject }}</p>
 
     <div class="actions">
-        <a href="{% url 'teacher_edit' teacher.id %}" class="button">Modifier</a>
-        <a href="{% url 'teacher_delete' teacher.id %}" class="button danger">Supprimer</a>
+        <a href="{% url 'teachers:update' teacher.id %}" class="button">Modifier</a>
+        <a href="{% url 'teachers:delete' teacher.id %}" class="button danger">Supprimer</a>
     </div>
 {% endblock %}

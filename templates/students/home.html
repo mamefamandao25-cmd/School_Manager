@@ -12,8 +12,8 @@
                 et gérez facilement vos étudiants et enseignants.
             </p>
             <div class="hero-actions">
-                <a href="{% url 'student_list' %}" class="button">Voir les étudiants <span aria-hidden="true">→</span></a>
-                <a href="{% url 'teacher_list' %}" class="text-link">Consulter les enseignants</a>
+                <a href="{% url 'students:list' %}" class="button">Voir les étudiants <span aria-hidden="true">→</span></a>
+                <a href="{% url 'teachers:list' %}" class="text-link">Consulter les enseignants</a>
             </div>
         </div>
         <div class="hero-note">
@@ -36,7 +36,7 @@
                 <span class="stat-icon" aria-hidden="true">É</span>
                 <p class="stat-label">Étudiants inscrits</p>
                 <p class="stat-value">{{ student_count }}</p>
-                <a href="{% url 'student_list' %}">Voir la liste <span aria-hidden="true">→</span></a>
+                <a href="{% url 'students:list' %}">Voir la liste <span aria-hidden="true">→</span></a>
             </article>
             <article class="stat-card">
                 <span class="stat-icon" aria-hidden="true">✓</span>
@@ -54,7 +54,7 @@
                 <span class="stat-icon" aria-hidden="true">E</span>
                 <p class="stat-label">Enseignants</p>
                 <p class="stat-value">{{ teacher_count }}</p>
-                <a href="{% url 'teacher_list' %}">Voir l’équipe <span aria-hidden="true">→</span></a>
+                <a href="{% url 'teachers:list' %}">Voir l’équipe <span aria-hidden="true">→</span></a>
             </article>
         </div>
     </section>

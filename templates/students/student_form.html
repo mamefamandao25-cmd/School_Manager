@@ -7,10 +7,15 @@
 
     <form method="post">
         {% csrf_token %}
-        <div class="form-grid">
-            {{ form.as_p }}
-        </div>
+        {{ form.non_field_errors }}
+        {% for field in form %}
+            <div class="field">
+                {{ field.label_tag }}
+                {{ field }}
+                {{ field.errors }}
+            </div>
+        {% endfor %}
         <button type="submit">Enregistrer</button>
-        <a href="{% if student %}{% url 'student_detail' student.id %}{% else %}{% url 'student_list' %}{% endif %}">Annuler</a>
+        <a href="{% if student %}{% url 'students:detail' student.id %}{% else %}{% url 'students:list' %}{% endif %}">Annuler</a>
     </form>
 {% endblock %}
