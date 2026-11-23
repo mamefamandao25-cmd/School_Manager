@@ -1,5 +1,5 @@
 from django.contrib import messages
-from django.db.models import Q
+from django.db.models import Avg, Q
 from django.shortcuts import get_object_or_404, redirect, render
 
 from .forms import StudentForm
@@ -19,7 +19,9 @@ def home(request):
 
 def student_list(request):
     query = request.GET.get("q", "").strip()
-    students = Student.objects.all().order_by("last_name", "first_name")
+    students = Student.objects.annotate(
+        average_grade=Avg("grades__score")
+    ).order_by("last_name", "first_name")
 
     if query:
         students = students.filter(
@@ -49,8 +51,15 @@ def student_create(request):
 
 
 def student_detail(request, id):
-    student = get_object_or_404(Student, id=id)
-    return render(request, "students/student_detail.html", {"student": student})
+    student = get_object_or_404(
+        Student.objects.prefetch_related("grades__subject"),
+        id=id,
+    )
+    return render(
+        request,
+        "students/student_detail.html",
+        {"student": student, "average_grade": student.average_grade},
+    )
 
 
 def student_edit(request, id):
@@ -81,7 +90,9 @@ def student_delete(request, id):
 
 
 def students_by_class(request, classe):
-    students = Student.objects.filter(classe__iexact=classe).order_by("last_name", "first_name")
+    students = Student.objects.filter(classe__iexact=classe).annotate(
+        average_grade=Avg("grades__score")
+    ).order_by("last_name", "first_name")
     return render(request, "students/student_list.html", {"students": students, "query": classe})
 
 

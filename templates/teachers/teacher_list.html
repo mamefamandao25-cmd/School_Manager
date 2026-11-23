@@ -21,13 +21,13 @@
 
     <table>
         <tr>
-            <th>Prénom</th><th>Nom</th><th>Matière</th><th>Actions</th>
+            <th>Prénom</th><th>Nom</th><th>Matières</th><th>Actions</th>
         </tr>
         {% for teacher in teachers %}
         <tr>
             <td><a href="{% url 'teachers:detail' teacher.id %}">{{ teacher.first_name }}</a></td>
             <td>{{ teacher.last_name|upper }}</td>
-            <td>{{ teacher.subject }}</td>
+            <td>{{ teacher.subjects.all|join:", "|default:"—" }}</td>
             <td>
                 <a href="{% url 'teachers:update' teacher.id %}" class="action-link">Modifier</a>
                 <a href="{% url 'teachers:delete' teacher.id %}" class="action-link danger">Supprimer</a>

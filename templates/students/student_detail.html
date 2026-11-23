@@ -11,6 +11,25 @@
     <p>Téléphone : {{ student.phone|default:"Non renseigné" }}</p>
     <p>Date de naissance : {{ student.birth_date|default:"Non renseignée" }}</p>
     <p>Statut : {% if student.active %}Actif{% else %}Inactif{% endif %}</p>
+    <h2>Notes</h2>
+    <p>Moyenne générale : {% if average_grade != None %}{{ average_grade|floatformat:2 }}/20{% else %}Aucune note{% endif %}</p>
+    <table>
+        <thead>
+            <tr><th>Matière</th><th>Évaluation</th><th>Note</th><th>Date</th></tr>
+        </thead>
+        <tbody>
+            {% for grade in student.grades.all %}
+                <tr>
+                    <td>{{ grade.subject.name }}</td>
+                    <td>{{ grade.title }}</td>
+                    <td>{{ grade.score }}/20</td>
+                    <td>{{ grade.date }}</td>
+                </tr>
+            {% empty %}
+                <tr><td colspan="4">Aucune note enregistrée.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
 
     <div class="actions">
         <a href="{% url 'students:update' student.id %}">Modifier</a>

@@ -1,4 +1,5 @@
 from django.contrib import messages
+from django.db.models import Q
 from django.shortcuts import get_object_or_404, redirect, render
 
 from students.models import Teacher
@@ -8,15 +9,13 @@ from .forms import TeacherForm
 
 def teacher_list(request):
     query = request.GET.get('q', '').strip()
-    teachers = Teacher.objects.all().order_by('last_name', 'first_name')
+    teachers = Teacher.objects.prefetch_related('subjects').order_by('last_name', 'first_name')
 
     if query:
         teachers = teachers.filter(
-            first_name__icontains=query
-        ) | teachers.filter(
-            last_name__icontains=query
-        ) | teachers.filter(
-            subject__icontains=query
+            Q(first_name__icontains=query)
+            | Q(last_name__icontains=query)
+            | Q(subjects__name__icontains=query)
         )
 
     context = {
@@ -40,7 +39,7 @@ def teacher_create(request):
 
 
 def teacher_detail(request, id):
-    teacher = get_object_or_404(Teacher, id=id)
+    teacher = get_object_or_404(Teacher.objects.prefetch_related('subjects'), id=id)
     return render(request, 'teachers/teacher_detail.html', {'teacher': teacher})
 
 

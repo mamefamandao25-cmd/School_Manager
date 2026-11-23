@@ -6,7 +6,7 @@
     <a href="{% url 'teachers:list' %}">← Retour à la liste</a>
     <h1>{{ teacher.first_name }} {{ teacher.last_name }}</h1>
     <p>Email : {{ teacher.email }}</p>
-    <p>Matière : {{ teacher.subject }}</p>
+    <p>Matières : {{ teacher.subjects.all|join:", "|default:"Aucune matière associée" }}</p>
 
     <div class="actions">
         <a href="{% url 'teachers:update' teacher.id %}" class="button">Modifier</a>

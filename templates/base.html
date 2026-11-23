@@ -23,6 +23,7 @@
             <a href="{{ students_url }}" {% if '/students/' in request.path %}class="active"{% endif %}>Étudiants</a>
             <a href="{{ teachers_url }}" {% if '/teachers/' in request.path %}class="active"{% endif %}>Enseignants</a>
             <a href="{{ about_url }}" {% if request.path == about_url %}class="active"{% endif %}>À propos</a>
+            <a href="{% url 'admin:index' %}">Administration</a>
         </nav>
     </header>
 
